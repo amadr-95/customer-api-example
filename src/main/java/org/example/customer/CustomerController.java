@@ -9,22 +9,20 @@ import java.util.List;
 @RestController()
 public class CustomerController {
 
-    private CustomerDAO db = new CustomerDAO();
+    private final CustomerService customerService;
+
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     //@RequestMapping(path = "/customers", method = RequestMethod.GET)
     @GetMapping(path = "/api/v1/customers")
     public List<Customer> getCustomers() {
-        return db.getCustomers();
+        return customerService.getCustomers();
     }
 
     @GetMapping(path = "/api/v1/customers/{customerId}")
-    public Customer getCustomer(
-            @PathVariable(name = "customerId") Integer customerId) {
-        return getCustomers().stream()
-                .filter(customer -> customer.getId().equals(customerId))
-                .findFirst()
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Customer with id %s does not exist".formatted(customerId))
-                );
+    public Customer getCustomerById(@PathVariable(name = "customerId") Integer customerId) {
+        return customerService.getCustomerById(customerId);
     }
 }
