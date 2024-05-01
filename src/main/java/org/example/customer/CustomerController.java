@@ -1,5 +1,6 @@
 package org.example.customer;
 
+import org.example.exception.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +23,7 @@ public class CustomerController {
     }
 
     @GetMapping(path = "/api/v1/customers/{customerId}")
-    public Customer getCustomerById(@PathVariable(name = "customerId") Integer customerId) {
+    public Customer getCustomerById(@PathVariable(name = "customerId") Integer customerId) throws ResourceNotFoundException {
         return customerService.getCustomerById(customerId);
     }
 }
