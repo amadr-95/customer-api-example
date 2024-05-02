@@ -41,4 +41,9 @@ public class CustomerService {
         );
         customerDAO.createCustomer(newCustomer);
     }
+
+    public void deleteCustomerById(Integer customerId) throws ResourceNotFoundException {
+        getCustomerById(customerId);
+        customerDAO.deleteCustomerById(customerId);
+    }
 }
