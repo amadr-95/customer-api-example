@@ -1,9 +1,22 @@
 package org.example.customer;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.util.Objects;
 
+@Entity
 public class Customer {
+    @Id
+    @SequenceGenerator(
+            name = "customer_id_sequence", //name in application
+            sequenceName = "customer_id_sequence", //name in database
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "customer_id_sequence"
+    )
     private Integer id;
     private String name;
     private String email;
