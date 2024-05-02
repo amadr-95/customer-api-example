@@ -1,13 +1,13 @@
 package org.example.customer;
 
+import org.example.exception.ResourceDuplicateException;
 import org.example.exception.ResourceNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController()
+@RequestMapping(path = "/api/v1/customers")
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -17,13 +17,20 @@ public class CustomerController {
     }
 
     //@RequestMapping(path = "/customers", method = RequestMethod.GET)
-    @GetMapping(path = "/api/v1/customers")
+    @GetMapping
     public List<Customer> getCustomers() {
         return customerService.getCustomers();
     }
 
-    @GetMapping(path = "/api/v1/customers/{customerId}")
-    public Customer getCustomerById(@PathVariable(name = "customerId") Integer customerId) throws ResourceNotFoundException {
+    @GetMapping(path = "/{customerId}")
+    public Customer getCustomerById(@PathVariable(name = "customerId") Integer customerId)
+            throws ResourceNotFoundException {
         return customerService.getCustomerById(customerId);
+    }
+
+    @PostMapping
+    public void createCustomer(@RequestBody CustomerRegistrationRequest customerRequest)
+            throws ResourceDuplicateException {
+        customerService.createCustomer(customerRequest);
     }
 }
