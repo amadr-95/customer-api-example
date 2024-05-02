@@ -20,6 +20,6 @@ public class CustomerJpaDataAccessService implements CustomerDAO {
 
     @Override
     public Optional<Customer> getCustomerById(Integer customerId) {
-        return Optional.empty();
+        return customerRepository.findById(customerId);
     }
 }
