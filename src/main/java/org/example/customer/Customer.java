@@ -35,6 +35,12 @@ public class Customer {
         this.birth = birth;
     }
 
+    public Customer(String name, String email, LocalDate birth) {
+        this.name = name;
+        this.email = email;
+        this.birth = birth;
+    }
+
     public Integer getId() {
         return id;
     }
