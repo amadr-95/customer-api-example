@@ -22,7 +22,22 @@ public class CustomerService {
     public Customer getCustomerById(Integer customerId) throws ResourceNotFoundException {
         return customerDAO.getCustomerById(customerId)
                 .orElseThrow(
-                        () -> new ResourceNotFoundException("Customer with id %s does not exist".formatted(customerId))
+                        () -> new ResourceNotFoundException(
+                                "Customer with id %s does not exist".formatted(customerId))
                 );
+    }
+
+    public void createCustomer(CustomerRegistrationRequest customer) throws ResourceNotFoundException {
+        //checks
+        String email = customer.email();
+        if (customerDAO.existCustomerByEmail(email))
+            throw new ResourceNotFoundException("email already taken");
+
+        Customer newCustomer = new Customer(
+                customer.name(),
+                customer.email(),
+                customer.birth()
+        );
+        customerDAO.createCustomer(newCustomer);
     }
 }
