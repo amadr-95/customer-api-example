@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Repository("list")
 public class CustomerListDataAccessService implements CustomerDAO {
     //fake db
     private final static List<Customer> customers;
