@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class CustomerDataAccessService implements CustomerDAO {
-    //db
+public class CustomerListDataAccessService implements CustomerDAO {
+    //fake db
     private final static List<Customer> customers;
 
     static {
