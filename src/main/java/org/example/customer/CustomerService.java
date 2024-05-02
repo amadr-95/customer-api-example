@@ -1,5 +1,6 @@
 package org.example.customer;
 
+import org.example.exception.ResourceDuplicateException;
 import org.example.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,11 +28,11 @@ public class CustomerService {
                 );
     }
 
-    public void createCustomer(CustomerRegistrationRequest customer) throws ResourceNotFoundException {
+    public void createCustomer(CustomerRegistrationRequest customer) throws ResourceDuplicateException {
         //checks
         String email = customer.email();
         if (customerDAO.existCustomerByEmail(email))
-            throw new ResourceNotFoundException("email already taken");
+            throw new ResourceDuplicateException("email already taken");
 
         Customer newCustomer = new Customer(
                 customer.name(),
