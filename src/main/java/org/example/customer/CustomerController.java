@@ -1,5 +1,6 @@
 package org.example.customer;
 
+import org.example.exception.RequestValidationException;
 import org.example.exception.ResourceDuplicateException;
 import org.example.exception.ResourceNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +39,12 @@ public class CustomerController {
     public void deleteCustomerById(@PathVariable(name = "customerId") Integer customerId)
             throws ResourceNotFoundException {
         customerService.deleteCustomerById(customerId);
+    }
+
+    @PutMapping("{customerId}")
+    public void updateCustomerById(@PathVariable(name = "customerId") Integer customerId,
+                                   @RequestBody CustomerUpdateRequest customer)
+            throws RequestValidationException, ResourceNotFoundException, ResourceDuplicateException {
+        customerService.updateCustomerById(customerId, customer);
     }
 }

@@ -1,11 +1,13 @@
 package org.example.customer;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository("jpa")
+//@Primary
 public class CustomerJpaDataAccessService implements CustomerDAO {
     private final CustomerRepository customerRepository;
 
@@ -36,5 +38,10 @@ public class CustomerJpaDataAccessService implements CustomerDAO {
     @Override
     public void deleteCustomerById(Integer customerId) {
         customerRepository.deleteById(customerId);
+    }
+
+    @Override
+    public void updateCustomer(Customer customer) {
+        customerRepository.save(customer);
     }
 }
