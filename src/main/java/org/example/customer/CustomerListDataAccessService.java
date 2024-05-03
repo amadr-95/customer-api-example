@@ -43,6 +43,9 @@ public class CustomerListDataAccessService implements CustomerDAO {
 
     @Override
     public void createCustomer(Customer customer) {
+        //generate the next id
+        Customer lastCustomer = customers.get(customers.size() - 1);
+        customer.setId(lastCustomer.getId() + 1);
         customers.add(customer);
     }
 
