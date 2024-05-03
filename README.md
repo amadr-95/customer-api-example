@@ -2,16 +2,16 @@
 
 ## Overview
 
-Developing an API that exposes endpoints to perform CRUD operations within Customer model,
-starting with a fake database to finish accessing to a real PostgreSQL database through Spring Data JPA.
+This project involves developing an API that exposes endpoints to perform CRUD operations on a Customer model. It starts
+with a fake database and progresses to accessing a real PostgreSQL database through Spring Data JPA
 
 ## N-Tier Architecture
 
-One layer per each class to separate concerns.
+The application follows an N-tier architecture, with each layer dedicated to a specific responsibility.
 
-- **API layer**: to intercept the request from the client (GET, POST, PUT, DELETE,...)
+- **API layer**: intercepts client requests (GET, POST, PUT, DELETE,...)
 - **Business layer**: where all the application logic takes place (throws exceptions, algorithms, ...)
-- **DAO layer**: responsible to interact with the database.
+- **DAO layer**: responsible for interacting with the database.
 
 [image]
 
@@ -24,13 +24,13 @@ them in the application context.
 The moment a class needs one of those dependencies,
 **Spring goes to the context application and injects them into the necessary classes**.
 
-[image]
+[N-Tier Architecture]
 
 In earlier versions of Spring it was also required to write `@Autowired` annotation on the
 constructor, but now it is no longer needed.
 
 ## PostgreSQL with Docker compose
-
+To set up the PostgreSQL database using Docker Compose:
 ```yaml
 networks:
   db:
@@ -56,23 +56,32 @@ services:
     restart: unless-stopped
 ```
 
-To have this database up and running:
-`
+To start the database container, run:
+```bash
 docker compose up -d
-`. This should pull the postgres image and get the container running.  
-Then check if the service is actually running by typing
-`docker compose ps`
+```
+
+This should pull the postgres image and get the container running.  
+Then check if the service is actually running by typing:
+
+```bash
+docker compose ps
+```
 
 To access the container and create the database:
-`docker exec -it postgres bash`
+```bash
+docker exec -it postgres bash
+```
 
-The container creates an user called postgres by default which
-have to be connect to Postgre server:  
-`psql -U postgres`
+The container creates an user called postgres by default.
+Connect to PostgreSQL server:  
+```bash
+psql -U postgres
+```
 
 ### Create the database
 
-Once inside the container the database can be created:
+Once inside the container, create the database:
 
 ```sql
 CREATE DATABASE customer;
@@ -102,34 +111,34 @@ spring:
 
 ## Spring Data JPA
 
-At this point we have two implementations of CustomerDAO:
+The `CustomerDAO` have two implementations:
 
-- CustomerJpaDataAccessService: which is linked to the real database
-- CustomerListDataAccessService: which retrieves data from a list acting like a fake database
+- `CustomerJpaDataAccessService`: which is linked to the real database
+- `CustomerListDataAccessService`: which retrieves data from a list acting like a fake database
 
-In CustomerService class we have to specified which one of these implementations we want to
-use to be injected. We have two options:
+In the `CustomerService` class, we specifies which one of these implementations we want to
+use and inject it. There are two options:
 
 - Mark one implementation as primary with `@Primary` annotation:
-  ```
+  ```java
   @Repository
   @Primary
   public class CustomerJPADataAccessService implements CustomerDAO {...}
   ```
-- Use qualifiers giving a name to each one and specify that name in CustomerService constructor
-  ```
+- Use qualifiers to give a name to each implementation and specify that name in `CustomerService` constructor
+  ```java
   @Repository
   @Qualifier("jpa")
   public class CustomerJPADataAccessService implements CustomerDAO {...}
   ```
 
-  ```
+  ```java
   @Repository
   @Qualifier("list")
   public class CustomerListDataAccessService implements CustomerDAO {...}
   ```
 
-  ```
+  ```java
   @Service
   public class CustomerService {
   
