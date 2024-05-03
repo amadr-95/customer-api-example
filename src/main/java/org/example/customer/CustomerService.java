@@ -1,5 +1,6 @@
 package org.example.customer;
 
+import org.example.exception.CustomerException;
 import org.example.exception.RequestValidationException;
 import org.example.exception.ResourceDuplicateException;
 import org.example.exception.ResourceNotFoundException;
@@ -13,7 +14,7 @@ public class CustomerService {
 
     private final CustomerDAO customerDAO;
 
-    public CustomerService(@Qualifier("jpa") CustomerDAO customerDAO) {
+    public CustomerService(@Qualifier("list") CustomerDAO customerDAO) {
         this.customerDAO = customerDAO;
     }
 
@@ -29,16 +30,18 @@ public class CustomerService {
                 );
     }
 
-    public void createCustomer(CustomerRegistrationRequest customer) throws ResourceDuplicateException {
-        //checks
-        String email = customer.email();
-        if (customerDAO.existCustomerByEmail(email))
-            throw new ResourceDuplicateException("email already taken");
+    public void createCustomer(CustomerRegistrationRequest customerRequest) throws CustomerException {
+        if (customerRequest == null)
+            throw new CustomerException("customer is null");
+
+        validateCustomerFields(customerRequest);
+
+        existsCustomerByEmail(customerRequest.email());
 
         Customer newCustomer = new Customer(
-                customer.name(),
-                customer.email(),
-                customer.birth()
+                customerRequest.name(),
+                customerRequest.email(),
+                customerRequest.birth()
         );
         customerDAO.createCustomer(newCustomer);
     }
@@ -49,15 +52,8 @@ public class CustomerService {
     }
 
     public void updateCustomerById(Integer customerId, CustomerUpdateRequest updateCustomer)
-            throws ResourceNotFoundException, ResourceDuplicateException, RequestValidationException {
+            throws CustomerException {
         Customer customer = getCustomerById(customerId); //throws NotFoundException
-
-        String emailRequest = updateCustomer.email();
-        if (updateCustomer.email() != null && !emailRequest.equalsIgnoreCase(customer.getEmail()) &&
-                customerDAO.existCustomerByEmail(emailRequest)
-        ) {
-            throw new ResourceDuplicateException("email already taken");
-        }
 
         boolean changes = false;
 
@@ -66,19 +62,35 @@ public class CustomerService {
             customer.setName(updateCustomer.name());
         }
         if (updateCustomer.email() != null && !updateCustomer.email().equalsIgnoreCase(customer.getEmail())) {
+            existsCustomerByEmail(updateCustomer.email());
+
             changes = true;
             customer.setEmail(updateCustomer.email());
         }
 
-        if (updateCustomer.birth() != null && !updateCustomer.birth().toString().equalsIgnoreCase(customer.getBirth().toString())) {
+        if (updateCustomer.birth() != null &&
+                !updateCustomer.birth().toString().equalsIgnoreCase(customer.getBirth().toString())) {
             changes = true;
             customer.setBirth(updateCustomer.birth());
         }
 
-        if(!changes)
+        if (!changes)
             throw new RequestValidationException("No data changes found");
 
         customerDAO.updateCustomer(customer);
+    }
 
+    private static void validateCustomerFields(CustomerRegistrationRequest customer) throws RequestValidationException {
+        if(
+                customer.name() == null || customer.name().isBlank() ||
+                        customer.email() == null || customer.email().isBlank()
+                        || customer.birth() == null || customer.birth().toString().isBlank()
+        )
+            throw new RequestValidationException("missing field/s");
+    }
+
+    private void existsCustomerByEmail(String email) throws ResourceDuplicateException {
+        if (customerDAO.existCustomerByEmail(email))
+            throw new ResourceDuplicateException("email already taken");
     }
 }
