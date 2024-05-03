@@ -13,7 +13,8 @@ The application follows an N-tier architecture, with each layer dedicated to a s
 - **Business layer**: where all the application logic takes place (throws exceptions, algorithms, ...)
 - **DAO layer**: responsible for interacting with the database.
 
-[image]
+![N-Tier-architecture](https://github.com/amadr-95/customer-api-example/assets/122611230/d972fa57-e830-428e-aa2c-404af3cbce49)
+
 
 ## Application Context
 
@@ -24,7 +25,8 @@ them in the application context.
 The moment a class needs one of those dependencies,
 **Spring goes to the context application and injects them into the necessary classes**.
 
-[N-Tier Architecture]
+![applicationContext](https://github.com/amadr-95/customer-api-example/assets/122611230/d6f963a7-92de-4159-94e9-ba0ef00de62a)
+
 
 In earlier versions of Spring it was also required to write `@Autowired` annotation on the
 constructor, but now it is no longer needed.
@@ -107,7 +109,8 @@ spring:
 
 ## Mapping Entities
 
-[imagen]
+![schema](https://github.com/amadr-95/customer-api-example/assets/122611230/9e3a77c3-3641-4657-bedb-21853bc0476c)
+
 
 ## Spring Data JPA
 
